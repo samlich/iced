@@ -10,6 +10,7 @@ use iced_native::{
     layout, mouse, Background, Color, Layout, Point, Rectangle, Vector, Widget,
 };
 
+mod layer;
 mod widget;
 
 /// A [`wgpu`] renderer.
@@ -478,7 +479,11 @@ impl iced_native::Renderer for Renderer {
                 primitives: vec![
                     base_primitive,
                     Primitive::Clip {
-                        bounds: overlay_bounds,
+                        bounds: Rectangle {
+                            width: overlay_bounds.width + 0.5,
+                            height: overlay_bounds.height + 0.5,
+                            ..overlay_bounds
+                        },
                         offset: Vector::new(0, 0),
                         content: Box::new(overlay_primitives),
                     },

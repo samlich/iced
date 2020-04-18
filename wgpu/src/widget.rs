@@ -9,6 +9,7 @@
 //! ```
 pub mod button;
 pub mod checkbox;
+pub mod combo_box;
 pub mod container;
 pub mod pane_grid;
 pub mod progress_bar;
@@ -23,6 +24,8 @@ mod text;
 pub use button::Button;
 #[doc(no_inline)]
 pub use checkbox::Checkbox;
+#[doc(no_inline)]
+pub use combo_box::ComboBox;
 #[doc(no_inline)]
 pub use container::Container;
 #[doc(no_inline)]
