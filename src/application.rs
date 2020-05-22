@@ -188,20 +188,21 @@ pub trait Application: Sized {
     {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let wgpu_settings = iced_wgpu::Settings {
+            let glow_settings = iced_glow::Settings {
                 default_font: settings.default_font,
                 antialiasing: if settings.antialiasing {
-                    Some(iced_wgpu::settings::Antialiasing::MSAAx4)
+                    Some(iced_glow::settings::Antialiasing::MSAAx4)
                 } else {
                     None
                 },
-                ..iced_wgpu::Settings::default()
+                ..iced_glow::Settings::default()
             };
 
-            <Instance<Self> as iced_winit::Application>::run(
-                settings.into(),
-                wgpu_settings,
-            );
+            iced_glutin::application::run::<
+                Instance<Self>,
+                Self::Executor,
+                iced_glow::window::Compositor,
+            >(settings.into(), glow_settings);
         }
 
         #[cfg(target_arch = "wasm32")]
@@ -212,14 +213,28 @@ pub trait Application: Sized {
 struct Instance<A: Application>(A);
 
 #[cfg(not(target_arch = "wasm32"))]
-impl<A> iced_winit::Application for Instance<A>
+impl<A> iced_glutin::Program for Instance<A>
 where
     A: Application,
 {
-    type Backend = iced_wgpu::window::Backend;
-    type Executor = A::Executor;
-    type Flags = A::Flags;
+    type Renderer = iced_glow::Renderer;
     type Message = A::Message;
+
+    fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
+        self.0.update(message)
+    }
+
+    fn view(&mut self) -> Element<'_, Self::Message> {
+        self.0.view()
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+impl<A> iced_glutin::Application for Instance<A>
+where
+    A: Application,
+{
+    type Flags = A::Flags;
 
     fn new(flags: Self::Flags) -> (Self, Command<A::Message>) {
         let (app, command) = A::new(flags);
@@ -231,23 +246,15 @@ where
         self.0.title()
     }
 
-    fn mode(&self) -> iced_winit::Mode {
+    fn mode(&self) -> iced_glutin::Mode {
         match self.0.mode() {
-            window::Mode::Windowed => iced_winit::Mode::Windowed,
-            window::Mode::Fullscreen => iced_winit::Mode::Fullscreen,
+            window::Mode::Windowed => iced_glutin::Mode::Windowed,
+            window::Mode::Fullscreen => iced_glutin::Mode::Fullscreen,
         }
-    }
-
-    fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
-        self.0.update(message)
     }
 
     fn subscription(&self) -> Subscription<Self::Message> {
         self.0.subscription()
-    }
-
-    fn view(&mut self) -> Element<'_, Self::Message> {
-        self.0.view()
     }
 }
 
