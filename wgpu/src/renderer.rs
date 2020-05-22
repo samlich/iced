@@ -10,7 +10,7 @@ use iced_native::{
     layout, mouse, Background, Color, Layout, Point, Rectangle, Vector, Widget,
 };
 
-mod layer;
+mod overlay;
 mod widget;
 
 /// A [`wgpu`] renderer.

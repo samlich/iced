@@ -1,10 +1,10 @@
 use crate::{Primitive, Renderer};
 use iced_native::{
-    layer, mouse, Background, Color, Font, HorizontalAlignment, Point,
+    mouse, overlay, Background, Color, Font, HorizontalAlignment, Point,
     Rectangle, VerticalAlignment,
 };
 
-impl layer::menu::Renderer for Renderer {
+impl overlay::menu::Renderer for Renderer {
     fn decorate(
         &mut self,
         bounds: Rectangle,
