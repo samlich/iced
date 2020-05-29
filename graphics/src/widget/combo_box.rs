@@ -1,3 +1,4 @@
+//! Select a value from a list of options.
 use crate::backend::{self, Backend};
 use crate::{Primitive, Renderer};
 use iced_native::{
@@ -7,6 +8,7 @@ use iced_native::{
 
 pub use iced_native::combo_box::State;
 
+/// A widget allowing the selection of a single value from a list of options.
 pub type ComboBox<'a, Message, Backend> =
     iced_native::ComboBox<'a, Message, Renderer<Backend>>;
 

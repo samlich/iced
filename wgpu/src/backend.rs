@@ -12,9 +12,10 @@ use iced_native::{Font, HorizontalAlignment, Size, VerticalAlignment};
 #[cfg(any(feature = "image", feature = "svg"))]
 use crate::image;
 
-/// A [`wgpu`] renderer.
+/// A [`wgpu`] graphics backend for [`iced`].
 ///
 /// [`wgpu`]: https://github.com/gfx-rs/wgpu-rs
+/// [`iced`]: https://github.com/hecrj/iced
 #[derive(Debug)]
 pub struct Backend {
     quad_pipeline: quad::Pipeline,
@@ -158,7 +159,6 @@ impl Backend {
             for text in layer.text.iter() {
                 // Target physical coordinates directly to avoid blurry text
                 let text = wgpu_glyph::Section {
-                    text: text.content,
                     // TODO: We `round` here to avoid rerasterizing text when
                     // its position changes slightly. This can make text feel a
                     // bit "jumpy". We may be able to do better once we improve
@@ -180,12 +180,18 @@ impl Backend {
                         (text.bounds.width * scale_factor).ceil(),
                         (text.bounds.height * scale_factor).ceil(),
                     ),
-                    scale: wgpu_glyph::Scale {
-                        x: text.size * scale_factor,
-                        y: text.size * scale_factor,
-                    },
-                    color: text.color,
-                    font_id: self.text_pipeline.find_font(text.font),
+                    text: vec![wgpu_glyph::Text {
+                        text: text.content,
+                        scale: wgpu_glyph::ab_glyph::PxScale {
+                            x: text.size * scale_factor,
+                            y: text.size * scale_factor,
+                        },
+                        font_id: self.text_pipeline.find_font(text.font),
+                        extra: wgpu_glyph::Extra {
+                            color: text.color,
+                            z: 0.0,
+                        },
+                    }],
                     layout: wgpu_glyph::Layout::default()
                         .h_align(match text.horizontal_alignment {
                             HorizontalAlignment::Left => {
@@ -250,10 +256,6 @@ impl backend::Text for Backend {
         bounds: Size,
     ) -> (f32, f32) {
         self.text_pipeline.measure(contents, size, font, bounds)
-    }
-
-    fn space_width(&self, size: f32) -> f32 {
-        self.text_pipeline.space_width(size)
     }
 }
 
