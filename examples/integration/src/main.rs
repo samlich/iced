@@ -119,16 +119,19 @@ pub fn main() {
                 }
             }
             Event::MainEventsCleared => {
-                // We update iced
-                let _ = state.update(
-                    None,
-                    viewport.logical_size(),
-                    &mut renderer,
-                    &mut debug,
-                );
+                // If there are events pending
+                if !state.is_queue_empty() {
+                    // We update iced
+                    let _ = state.update(
+                        None,
+                        viewport.logical_size(),
+                        &mut renderer,
+                        &mut debug,
+                    );
 
-                // and request a redraw
-                window.request_redraw();
+                    // and request a redraw
+                    window.request_redraw();
+                }
             }
             Event::RedrawRequested(_) => {
                 if resized {
@@ -144,6 +147,8 @@ pub fn main() {
                             present_mode: wgpu::PresentMode::Mailbox,
                         },
                     );
+
+                    resized = false;
                 }
 
                 let frame = swap_chain.get_next_texture().expect("Next frame");
@@ -152,14 +157,19 @@ pub fn main() {
                     &wgpu::CommandEncoderDescriptor { label: None },
                 );
 
-                // We draw the scene first
                 let program = state.program();
 
-                scene.draw(
-                    &mut encoder,
-                    &frame.view,
-                    program.background_color(),
-                );
+                {
+                    // We clear the frame
+                    let mut render_pass = scene.clear(
+                        &frame.view,
+                        &mut encoder,
+                        program.background_color(),
+                    );
+
+                    // Draw the scene
+                    scene.draw(&mut render_pass);
+                }
 
                 // And then iced on top
                 let mouse_interaction = renderer.backend_mut().draw(
