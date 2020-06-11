@@ -2,7 +2,7 @@
 //! for [`iced`].
 //!
 //! [`iced`]: https://github.com/hecrj/iced
-#![deny(missing_docs)]
+//#![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
 #![deny(unused_results)]
 #![deny(unsafe_code)]
@@ -10,17 +10,17 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 mod antialiasing;
 mod defaults;
-mod overlay;
 mod primitive;
 mod renderer;
 mod transformation;
 mod viewport;
-mod widget;
 
 pub mod backend;
 pub mod font;
 pub mod layer;
+pub mod overlay;
 pub mod triangle;
+pub mod widget;
 pub mod window;
 
 #[doc(no_inline)]

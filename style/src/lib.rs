@@ -4,7 +4,9 @@
 //! widgets.
 pub mod button;
 pub mod checkbox;
+pub mod combo_box;
 pub mod container;
+pub mod menu;
 pub mod progress_bar;
 pub mod radio;
 pub mod scrollable;
