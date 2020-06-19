@@ -1,7 +1,9 @@
 use crate::container;
 use crate::layout;
 use crate::pane_grid::{self, TitleBar};
-use crate::{Clipboard, Element, Event, Hasher, Layout, Point, Size, Vector};
+use crate::{
+    Clipboard, Element, Event, Hasher, Layout, Overlay, Point, Size, Vector,
+};
 
 /// The content of a [`Pane`].
 ///
@@ -171,6 +173,21 @@ where
 
     pub(crate) fn hash_layout(&self, state: &mut Hasher) {
         self.body.hash_layout(state);
+    }
+
+    pub(crate) fn overlay(
+        &mut self,
+        layout: Layout<'_>,
+    ) -> Option<Overlay<'a, Message, Renderer>> {
+        let body_layout = if self.title_bar.is_some() {
+            let mut children = layout.children();
+
+            children.next().unwrap()
+        } else {
+            layout
+        };
+
+        self.body.overlay(body_layout)
     }
 }
 
