@@ -24,6 +24,8 @@ pub struct Backend {
 
     #[cfg(any(feature = "image", feature = "svg"))]
     image_pipeline: image::Pipeline,
+
+    default_text_size: u16,
 }
 
 impl Backend {
@@ -50,6 +52,8 @@ impl Backend {
 
             #[cfg(any(feature = "image", feature = "svg"))]
             image_pipeline,
+
+            default_text_size: settings.default_text_size,
         }
     }
 
@@ -245,6 +249,10 @@ impl backend::Text for Backend {
     const ICON_FONT: Font = font::ICONS;
     const CHECKMARK_ICON: char = font::CHECKMARK_ICON;
     const ARROW_DOWN_ICON: char = font::ARROW_DOWN_ICON;
+
+    fn default_size(&self) -> u16 {
+        self.default_text_size
+    }
 
     fn measure(
         &self,

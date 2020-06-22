@@ -1,4 +1,5 @@
-use crate::{Backend, Primitive, Renderer};
+use crate::backend::{self, Backend};
+use crate::{Primitive, Renderer};
 use iced_native::{
     mouse, overlay, Color, Font, HorizontalAlignment, Point, Rectangle,
     VerticalAlignment,
@@ -8,7 +9,7 @@ pub use iced_style::menu::Style;
 
 impl<B> overlay::menu::Renderer for Renderer<B>
 where
-    B: Backend,
+    B: Backend + backend::Text,
 {
     type Style = Style;
 

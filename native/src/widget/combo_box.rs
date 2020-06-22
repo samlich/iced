@@ -116,7 +116,7 @@ where
             .height(Length::Shrink)
             .pad(f32::from(self.padding));
 
-        let text_size = self.text_size.unwrap_or(Renderer::DEFAULT_SIZE);
+        let text_size = self.text_size.unwrap_or(renderer.default_size());
 
         let max_width = match self.width {
             Length::Shrink => {
@@ -208,7 +208,7 @@ where
             layout.bounds(),
             cursor_position,
             self.selected.as_ref().map(ToString::to_string),
-            self.text_size.unwrap_or(Renderer::DEFAULT_SIZE),
+            self.text_size.unwrap_or(renderer.default_size()),
             self.padding,
             &self.style,
         )
@@ -236,7 +236,7 @@ where
                         on_selected,
                         bounds.width.round() as u16,
                         bounds.height,
-                        self.text_size.unwrap_or(Renderer::DEFAULT_SIZE),
+                        self.text_size,
                         self.padding,
                         Renderer::menu_style(&self.style),
                     )),

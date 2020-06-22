@@ -18,6 +18,7 @@ pub struct Backend {
     quad_pipeline: quad::Pipeline,
     text_pipeline: text::Pipeline,
     triangle_pipeline: triangle::Pipeline,
+    default_text_size: u16,
 }
 
 impl Backend {
@@ -33,6 +34,7 @@ impl Backend {
             quad_pipeline,
             text_pipeline,
             triangle_pipeline,
+            default_text_size: settings.default_text_size,
         }
     }
 
@@ -192,6 +194,10 @@ impl backend::Text for Backend {
     const ICON_FONT: Font = font::ICONS;
     const CHECKMARK_ICON: char = font::CHECKMARK_ICON;
     const ARROW_DOWN_ICON: char = font::ARROW_DOWN_ICON;
+
+    fn default_size(&self) -> u16 {
+        self.default_text_size
+    }
 
     fn measure(
         &self,
