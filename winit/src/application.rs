@@ -148,6 +148,7 @@ pub fn run<A, E, C>(
         .expect("Open window");
 
     let clipboard = Clipboard::new(&window);
+    let mut cursor_position = winit::dpi::PhysicalPosition::new(-1.0, -1.0);
     let mut mouse_interaction = mouse::Interaction::default();
     let mut modifiers = winit::event::ModifiersState::default();
 
@@ -171,6 +172,7 @@ pub fn run<A, E, C>(
     let mut state = program::State::new(
         application,
         viewport.logical_size(),
+        conversion::cursor_position(cursor_position, viewport.scale_factor()),
         &mut renderer,
         &mut debug,
     );
@@ -184,8 +186,12 @@ pub fn run<A, E, C>(
 
             let command = runtime.enter(|| {
                 state.update(
-                    clipboard.as_ref().map(|c| c as _),
                     viewport.logical_size(),
+                    conversion::cursor_position(
+                        cursor_position,
+                        viewport.scale_factor(),
+                    ),
+                    clipboard.as_ref().map(|c| c as _),
                     &mut renderer,
                     &mut debug,
                 )
@@ -234,6 +240,22 @@ pub fn run<A, E, C>(
                     viewport = Viewport::with_physical_size(
                         Size::new(size.width, size.height),
                         window.scale_factor() * new_scale_factor,
+                    );
+
+                    // We relayout the UI with the new logical size.
+                    // The queue is empty, therefore this will never produce
+                    // a `Command`.
+                    //
+                    // TODO: Properly queue `WindowResized`
+                    let _ = state.update(
+                        viewport.logical_size(),
+                        conversion::cursor_position(
+                            cursor_position,
+                            viewport.scale_factor(),
+                        ),
+                        clipboard.as_ref().map(|c| c as _),
+                        &mut renderer,
+                        &mut debug,
                     );
 
                     scale_factor = new_scale_factor;
@@ -291,6 +313,7 @@ pub fn run<A, E, C>(
                 &window,
                 scale_factor,
                 control_flow,
+                &mut cursor_position,
                 &mut modifiers,
                 &mut viewport,
                 &mut resized,
@@ -319,6 +342,7 @@ pub fn handle_window_event(
     window: &winit::window::Window,
     scale_factor: f64,
     control_flow: &mut winit::event_loop::ControlFlow,
+    cursor_position: &mut winit::dpi::PhysicalPosition<f64>,
     modifiers: &mut winit::event::ModifiersState,
     viewport: &mut Viewport,
     resized: &mut bool,
@@ -338,6 +362,9 @@ pub fn handle_window_event(
         }
         WindowEvent::CloseRequested => {
             *control_flow = ControlFlow::Exit;
+        }
+        WindowEvent::CursorMoved { position, .. } => {
+            *cursor_position = *position;
         }
         WindowEvent::ModifiersChanged(new_modifiers) => {
             *modifiers = *new_modifiers;
