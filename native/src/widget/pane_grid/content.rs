@@ -182,7 +182,10 @@ where
         let body_layout = if self.title_bar.is_some() {
             let mut children = layout.children();
 
-            children.next().unwrap()
+            // Overlays only allowed in the pane body, for now at least.
+            let _title_bar_layout = children.next();
+
+            children.next()?
         } else {
             layout
         };
