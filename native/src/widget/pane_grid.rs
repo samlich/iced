@@ -288,8 +288,6 @@ where
                     self.state.focus(pane);
                 }
             }
-        } else {
-            self.state.unfocus();
         }
     }
 
@@ -303,7 +301,7 @@ where
             if let Some((split, _)) = self.state.picked_split() {
                 let bounds = layout.bounds();
 
-                let splits = self.state.splits(
+                let splits = self.state.split_regions(
                     f32::from(self.spacing),
                     Size::new(bounds.width, bounds.height),
                 );
@@ -425,7 +423,7 @@ where
         let limits = limits.width(self.width).height(self.height);
         let size = limits.resolve(Size::ZERO);
 
-        let regions = self.state.regions(f32::from(self.spacing), size);
+        let regions = self.state.pane_regions(f32::from(self.spacing), size);
 
         let children = self
             .elements
@@ -468,7 +466,7 @@ where
                                     cursor_position.y - bounds.y,
                                 );
 
-                                let splits = self.state.splits(
+                                let splits = self.state.split_regions(
                                     f32::from(self.spacing),
                                     Size::new(bounds.width, bounds.height),
                                 );
@@ -497,6 +495,8 @@ where
                                 );
                             }
                         }
+                    } else {
+                        self.state.unfocus();
                     }
                 }
                 mouse::Event::ButtonReleased(mouse::Button::Left) => {
@@ -605,7 +605,7 @@ where
 
                     let splits = self
                         .state
-                        .splits(f32::from(self.spacing), bounds.size());
+                        .split_regions(f32::from(self.spacing), bounds.size());
 
                     hovered_split(
                         splits.iter(),
