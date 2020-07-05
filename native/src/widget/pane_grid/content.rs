@@ -178,7 +178,7 @@ where
     pub(crate) fn overlay(
         &mut self,
         layout: Layout<'_>,
-    ) -> Option<Overlay<'a, Message, Renderer>> {
+    ) -> Option<Overlay<'_, Message, Renderer>> {
         let body_layout = if self.title_bar.is_some() {
             let mut children = layout.children();
 

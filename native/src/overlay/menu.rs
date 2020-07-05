@@ -39,7 +39,7 @@ where
     pub fn new<T: 'a>(
         state: &'a mut State,
         options: impl Into<Cow<'a, [T]>>,
-        on_selected: Box<dyn Fn(T) -> Message>,
+        on_selected: &'a dyn Fn(T) -> Message,
         width: u16,
         target_height: f32,
         text_size: Option<u16>,
@@ -175,7 +175,7 @@ where
 {
     hovered_option: &'a mut Option<usize>,
     options: Cow<'a, [T]>,
-    on_selected: Box<dyn Fn(T) -> Message>,
+    on_selected: &'a dyn Fn(T) -> Message,
     text_size: Option<u16>,
     padding: u16,
     style: <Renderer as self::Renderer>::Style,
@@ -188,7 +188,7 @@ where
     pub fn new(
         hovered_option: &'a mut Option<usize>,
         options: impl Into<Cow<'a, [T]>>,
-        on_selected: Box<dyn Fn(T) -> Message>,
+        on_selected: &'a dyn Fn(T) -> Message,
         text_size: Option<u16>,
         padding: u16,
         style: <Renderer as self::Renderer>::Style,
