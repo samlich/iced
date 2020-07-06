@@ -30,7 +30,7 @@ impl Point {
         let a = self.x - to.x;
         let b = self.y - to.y;
 
-        a.hypot(b)
+        libm::hypotf(a, b)
     }
 }
 
@@ -46,7 +46,7 @@ impl From<[u16; 2]> for Point {
     }
 }
 
-impl std::ops::Add<Vector> for Point {
+impl core::ops::Add<Vector> for Point {
     type Output = Self;
 
     fn add(self, vector: Vector) -> Self {
@@ -57,7 +57,7 @@ impl std::ops::Add<Vector> for Point {
     }
 }
 
-impl std::ops::Sub<Vector> for Point {
+impl core::ops::Sub<Vector> for Point {
     type Output = Self;
 
     fn sub(self, vector: Vector) -> Self {
@@ -68,7 +68,7 @@ impl std::ops::Sub<Vector> for Point {
     }
 }
 
-impl std::ops::Sub<Point> for Point {
+impl core::ops::Sub<Point> for Point {
     type Output = Vector;
 
     fn sub(self, point: Point) -> Vector {

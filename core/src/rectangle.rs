@@ -133,13 +133,13 @@ impl Rectangle<f32> {
         Rectangle {
             x: self.x as u32,
             y: self.y as u32,
-            width: self.width.ceil() as u32,
-            height: self.height.ceil() as u32,
+            width: libm::ceilf(self.width) as u32,
+            height: libm::ceilf(self.height) as u32,
         }
     }
 }
 
-impl std::ops::Mul<f32> for Rectangle<f32> {
+impl core::ops::Mul<f32> for Rectangle<f32> {
     type Output = Self;
 
     fn mul(self, scale: f32) -> Self {
@@ -163,9 +163,9 @@ impl From<Rectangle<u32>> for Rectangle<f32> {
     }
 }
 
-impl<T> std::ops::Add<Vector<T>> for Rectangle<T>
+impl<T> core::ops::Add<Vector<T>> for Rectangle<T>
 where
-    T: std::ops::Add<Output = T>,
+    T: core::ops::Add<Output = T>,
 {
     type Output = Rectangle<T>;
 

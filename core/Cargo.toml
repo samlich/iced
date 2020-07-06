@@ -8,6 +8,9 @@ license = "MIT"
 repository = "https://github.com/hecrj/iced"
 
 [dependencies]
+# f32::powf, hypot, and ceil are in std, but not core
+# Tracking issue: https://github.com/rust-lang/rust/issues/50145
+libm = "0.2"
 
 [dependencies.palette]
 version = "0.5.0"

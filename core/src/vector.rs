@@ -21,9 +21,9 @@ impl<T> Vector<T> {
     }
 }
 
-impl<T> std::ops::Add for Vector<T>
+impl<T> core::ops::Add for Vector<T>
 where
-    T: std::ops::Add<Output = T>,
+    T: core::ops::Add<Output = T>,
 {
     type Output = Self;
 
@@ -32,9 +32,9 @@ where
     }
 }
 
-impl<T> std::ops::Sub for Vector<T>
+impl<T> core::ops::Sub for Vector<T>
 where
-    T: std::ops::Sub<Output = T>,
+    T: core::ops::Sub<Output = T>,
 {
     type Output = Self;
 
@@ -43,9 +43,9 @@ where
     }
 }
 
-impl<T> std::ops::Mul<T> for Vector<T>
+impl<T> core::ops::Mul<T> for Vector<T>
 where
-    T: std::ops::Mul<Output = T> + Copy,
+    T: core::ops::Mul<Output = T> + Copy,
 {
     type Output = Self;
 
